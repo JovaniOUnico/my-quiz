@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:my_quiz/ui/questoes.dart';
+import 'package:my_quiz/ui/conjuntoLista.dart';
 
 class Results extends StatefulWidget {
-  Results({Key key, this.title}) : super(key: key);
+  int ofc_acertos;
+  int ofc_erros;
+  int ofc_qtd;
+  String ofc_id_questoes;
 
-  final String title;
+  Results(this.ofc_acertos, this.ofc_erros, this.ofc_qtd, this.ofc_id_questoes);
+
   @override
   _ResultsState createState() => _ResultsState();
 }
@@ -12,7 +18,7 @@ class _ResultsState extends State<Results> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.lightBlueAccent),
+      decoration: BoxDecoration(color: Colors.blueGrey),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -73,7 +79,7 @@ class _ResultsState extends State<Results> {
                       border: Border(
                     bottom: BorderSide(
                       color: Colors.black,
-                      width: 2.0,
+                      width: 1.0,
                     ),
                   )),
                   child: RichText(
@@ -86,23 +92,22 @@ class _ResultsState extends State<Results> {
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'MUITO ',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        TextSpan(
-                          text: ' BEM!!',
+                          text: ' Você Completou o Quiz!! ',
                           style: TextStyle(color: Colors.green),
-                        ),
-                        TextSpan(
-                          text: ' FALTOU POUCO!!',
-                          style: TextStyle(color: Colors.white),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(30, 90, 30, 0),
+                  decoration: BoxDecoration(
+                      border: Border(
+                    bottom: BorderSide(
+                      color: Colors.black,
+                      width: 1.0,
+                    ),
+                  )),
+                  margin: EdgeInsets.fromLTRB(30, 90, 30, 30),
                   padding: const EdgeInsets.only(bottom: 20),
                   child: RichText(
                     text: TextSpan(
@@ -114,11 +119,11 @@ class _ResultsState extends State<Results> {
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                          text: '8 ACERTOS DE ',
-                          style: TextStyle(color: Colors.orange),
+                          text: widget.ofc_acertos.toString() + ' ACERTOS DE ',
+                          style: TextStyle(color: Colors.green),
                         ),
                         TextSpan(
-                          text: ' 10',
+                          text: ' ' + widget.ofc_qtd.toString(),
                           style: TextStyle(color: Colors.purple),
                         ),
                         TextSpan(
@@ -128,7 +133,65 @@ class _ResultsState extends State<Results> {
                       ],
                     ),
                   ),
-                )
+                ),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: FlatButton(
+                              onPressed: () {
+                                //volta na primeira tela
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConjuntoLista(),
+                                  ),
+                                );
+                              },
+                              color: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              textColor: Colors.orange,
+                              child: Text(
+                                "Voltar ao Inicio",
+                                style: TextStyle(fontSize: 38.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FlatButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Questions(widget.ofc_id_questoes),
+                                ),
+                              );
+                            },
+                            color: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            textColor: Colors.orange,
+                            child: Text(
+                              "Tentar Novamente",
+                              style: TextStyle(fontSize: 38.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
