@@ -12,6 +12,7 @@ class ConjuntoLista extends StatefulWidget {
 
 class _ConjuntoListaState extends State<ConjuntoLista> {
   final StreamController _streamController = StreamController<dynamic>();
+  
   List<GrupoLista> ofc_lista_conjunto;
   int ofc_lista_conjunto_qtd;
   List<GrupoLista> ofc_aux_lista_conjunto;
@@ -54,7 +55,7 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
   }
 
   pegaListaConjunto() {
-    print("ass4");
+
     ofc_lista_conjunto = new List<GrupoLista>();
 
     this.fbr_lista_conjunto.documents.forEach((element) {
@@ -72,11 +73,12 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
       });
       ofc_lista_conjunto.add(aux_questao_lista);
     });
+    //TODO Usar length
     ofc_lista_conjunto_qtd = ofc_lista_conjunto.length;
   }
 
   getConjunto() async {
-    print("ass3");
+
     //Pega todas as questoes da lista
     QuerySnapshot questoesSnap =
         await Firestore.instance.collection('areas_lista').getDocuments();
@@ -87,7 +89,7 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
   }
 
   gerandoListagem() {
-    print("ass2");
+
     getConjunto();
     //TODO: Verificar como funciona o Stream Builder
     return StreamBuilder(

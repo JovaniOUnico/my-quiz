@@ -18,7 +18,16 @@ class _ResultsState extends State<Results> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.blueGrey),
+      decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Colors.blue,
+                Colors.red,
+              ],
+            ),
+          ),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -75,62 +84,76 @@ class _ResultsState extends State<Results> {
                 Container(
                   margin: EdgeInsets.fromLTRB(30, 90, 30, 0),
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 60),
-                  decoration: BoxDecoration(
-                      border: Border(
-                    bottom: BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
-                    ),
-                  )),
-                  child: RichText(
-                    text: TextSpan(
-                      text: "",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        decorationStyle: TextDecorationStyle.wavy,
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                          color: Colors.white10,
+                          width: 4.0,
+                          style: BorderStyle.solid),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(30),
                       ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: ' Você Completou o Quiz!! ',
-                          style: TextStyle(color: Colors.green),
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        text: "",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 43,
+                          decorationStyle: TextDecorationStyle.wavy,
                         ),
-                      ],
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: acertosTexto(),
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                    bottom: BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
-                    ),
-                  )),
                   margin: EdgeInsets.fromLTRB(30, 90, 30, 30),
                   padding: const EdgeInsets.only(bottom: 20),
-                  child: RichText(
-                    text: TextSpan(
-                      text: "",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        decorationStyle: TextDecorationStyle.wavy,
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                            color: Colors.white10,
+                            width: 4.0,
+                            style: BorderStyle.solid),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
+                        ),
                       ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: widget.ofc_acertos.toString() + ' ACERTOS DE ',
-                          style: TextStyle(color: Colors.green),
+                      child:RichText(
+                      text: TextSpan(
+                        text: "",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 40,
+                          decorationStyle: TextDecorationStyle.wavy,
                         ),
-                        TextSpan(
-                          text: ' ' + widget.ofc_qtd.toString(),
-                          style: TextStyle(color: Colors.purple),
-                        ),
-                        TextSpan(
-                          text: ' PERGUNTAS ',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: widget.ofc_acertos.toString() + ' ACERTOS DE ',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          TextSpan(
+                            text: ' ' + widget.ofc_qtd.toString(),
+                            style: TextStyle(color: Colors.purple),
+                          ),
+                          TextSpan(
+                            text: ' PERGUNTAS ',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -198,5 +221,19 @@ class _ResultsState extends State<Results> {
         ),
       ),
     );
+  }
+
+  acertosTexto(){
+    if(widget.ofc_acertos == widget.ofc_qtd){
+      return "Parabéns você acertou todas as questões";
+    }else if(widget.ofc_acertos == widget.ofc_erros){
+      return "Parabéns você acertou metade das questões";
+    }else if(widget.ofc_acertos > widget.ofc_erros){
+      return "Parabéns você acertou a maioria das questões";
+    }else if(widget.ofc_acertos < widget.ofc_erros){
+      return "Que Pena você errou a maioria das questões";
+    }else if(widget.ofc_erros == widget.ofc_qtd){
+      return "Que pena vocÊ errou todas as questões";
+    }
   }
 }
