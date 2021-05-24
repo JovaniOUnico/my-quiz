@@ -5,37 +5,55 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_quiz/controllers/questao.dart';
 import 'package:my_quiz/ui/resultados.dart';
 
+/** Configurações Globais */
+import 'package:my_quiz/ui/globalText.dart';
 class Questions extends StatefulWidget {
   String id_lista;
+  int dificuldade;
+  int qtd_perguntas = 0;
 
   @override
-  Questions(this.id_lista);
+  Questions(this.id_lista, this.dificuldade, this.qtd_perguntas){
+    //TODO Aqui pega a lista de perguntas e a quantidade
+  }
 
   @override
-  _QuestionsState createState() => _QuestionsState();
+  _QuestionsState createState() => _QuestionsState(this.qtd_perguntas);
 }
 
 class _QuestionsState extends State<Questions> {
-  int ofc_questao_atual;
-  int ofc_qtd_questoes = 0;
+  
+  /* Atributos classe */
   List<Questao> ofc_lista_questoes;
   Map<int, String> ofc_lista_alternativas;
+  int dificuldade;
 
-  int ofc_acertos = 0;
-  int ofc_erros = 0;
+  int ofc_questao_atual;
+  int ofc_qtd_questoes = 0;
+  int ofc_acertos      = 0;
+  int ofc_erros        = 0;
+  double progress      = 0;
+  String txt_progress  = "";
 
   dynamic lista_questoes;
   final _streamController = StreamController<dynamic>();
 
   void proxima_questao() {
-    if (ofc_qtd_questoes.toInt() - 1 == ofc_questao_atual.toInt()) {
+
+    //Atualiza barra de Progresso
+    setState(() {
+      //Altera Barra de Progresso
+      progress = ofc_questao_atual+1/ofc_qtd_questoes;
+    });
+
+    if (ofc_qtd_questoes - 1 == ofc_questao_atual) {
       //chama tela
       setState(() {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => Results(this.ofc_acertos, this.ofc_erros,
-                this.ofc_qtd_questoes, widget.id_lista),
+                this.ofc_qtd_questoes, widget.id_lista, this.dificuldade),
           ),
         );
       });
@@ -92,23 +110,21 @@ class _QuestionsState extends State<Questions> {
       ofc_questao_atual++;
     }
 
+    int contador = ofc_questao_atual+1;
+    this.txt_progress = contador.toString()+"/"+ofc_qtd_questoes.toString();
+
     if (ofc_questao_atual != (ofc_qtd_questoes)) {
       ofc_lista_alternativas =
           ofc_lista_questoes[ofc_questao_atual].setListaAlternativas(4);
       int aux_certa = ofc_lista_questoes[ofc_questao_atual].alternativa_certa;
 
-      return SingleChildScrollView(
+      return 
+      SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(15),
-              child: Text(
-                ofc_lista_questoes[ofc_questao_atual].enunciado,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    decoration: TextDecoration.none),
-              ),
+              child: GText.DXLText(ofc_lista_questoes[ofc_questao_atual].enunciado),
             ),
             ListView.builder(
               itemCount: 4,
@@ -127,9 +143,7 @@ class _QuestionsState extends State<Questions> {
                       onPressed: () {
                         acertou();
                       },
-                      child: Text('$texto',
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 27.0)),
+                      child: GText.DLText('$texto'),
                     ),
                   );
                 } else {
@@ -143,10 +157,7 @@ class _QuestionsState extends State<Questions> {
                       onPressed: () {
                         errou();
                       },
-                      child: Text(
-                        '$texto',
-                        style: TextStyle(color: Colors.white, fontSize: 27.0),
-                      ),
+                      child: GText.DLText('$texto'),
                     ),
                   );
                 }
@@ -167,7 +178,7 @@ class _QuestionsState extends State<Questions> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
-            child: Text("Erro Ao Acessar"),
+            child: GText.DText("Erro Ao Acessar"),
           );
         }
 
@@ -190,16 +201,20 @@ class _QuestionsState extends State<Questions> {
   }
 
   @override
-  _QuestionsState() {
+  _QuestionsState(int valor) {
     //metodo construtor
+    this.ofc_qtd_questoes = valor;
+    this.txt_progress = "0/"+ofc_qtd_questoes.toString();
     getQuestao();
   }
 
   @override
   Widget build(BuildContext context) {
+    this.dificuldade = widget.dificuldade;
+
     return SingleChildScrollView(
       child: Container(
-        decoration: BoxDecoration(color: Colors.red[200]),
+        decoration: BoxDecoration(color: getCorDificuldade()),
         child: Column(
           children: <Widget>[
             Image.asset(
@@ -207,16 +222,30 @@ class _QuestionsState extends State<Questions> {
               fit: BoxFit.cover,
               height: 200,
             ),
-            Center(
-                child: Padding(
-              padding: EdgeInsets.only(top: 120.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  gerandoBotoes(),
-                ],
+
+              SizedBox(
+                width: MediaQuery.of(context).size.width-20,
+                child: LinearProgressIndicator(
+                  value: progress,
+                  valueColor: AlwaysStoppedAnimation(Colors.green),
+                  backgroundColor: Colors.white,
+                ),
               ),
-            )),
+              Center(
+                child: GText.DText(txt_progress),
+              ),
+
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      gerandoBotoes(),
+                    ],
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.only(top: 160.0),
               child: Image.asset(
@@ -229,5 +258,17 @@ class _QuestionsState extends State<Questions> {
         ),
       ),
     );
+  }
+
+  getCorDificuldade(){
+    if(this.dificuldade == 1){
+      return Colors.green[300];
+    }else if(this.dificuldade == 2){
+      return Colors.red[200];
+    }else if(this.dificuldade == 3){
+      return Colors.red[300];
+    }else{
+      return Colors.red[400];
+    }
   }
 }

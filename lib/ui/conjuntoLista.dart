@@ -5,6 +5,9 @@ import 'package:my_quiz/controllers/grupo_lista.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_quiz/ui/listaQuestoes.dart';
 
+/** Configurações Globais */
+import 'package:my_quiz/ui/globalText.dart';
+
 class ConjuntoLista extends StatefulWidget {
   @override
   _ConjuntoListaState createState() => _ConjuntoListaState();
@@ -13,6 +16,7 @@ class ConjuntoLista extends StatefulWidget {
 class _ConjuntoListaState extends State<ConjuntoLista> {
   final StreamController _streamController = StreamController<dynamic>();
   
+  /* Atributos da Classe */
   List<GrupoLista> ofc_lista_conjunto;
   int ofc_lista_conjunto_qtd;
   List<GrupoLista> ofc_aux_lista_conjunto;
@@ -97,7 +101,7 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
-            child: Text("Erro Ao Acessar"),
+            child: GText.DText("Erro Ao Acessar"),
           );
         }
 
@@ -143,12 +147,8 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
                   Row(
                     children: <Widget>[
                       //TODO colocar um quadrado aqui
-                      Text(
+                      GText.DMText(
                         ofc_aux_lista_conjunto[index].nome, //TODO Dificuldade
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            decoration: TextDecoration.none),
                       ),
                     ],
                   ),
@@ -170,10 +170,7 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
               ),
             );
           } else {
-            return Text(
-              "Nada Enconrado",
-              style: TextStyle(decoration: TextDecoration.none),
-            );
+            return GText.DText("Nada Enconrado");
           }
         },
       );
@@ -207,13 +204,7 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
               Row(
                 children: <Widget>[
                   //TODO colocar um quadrado aqui
-                  Text(
-                    ofc_lista_conjunto[index].nome, //TODO Dificuldade
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        decoration: TextDecoration.none),
-                  ),
+                  GText.DMText(ofc_lista_conjunto[index].nome),//TODO Dificuldade
                 ],
               ),
               Container(
@@ -240,7 +231,61 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: gradienteFundo(),
+      child: Column(
+        children: <Widget>[
+          Container(
+          width:  MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height *.18,
+          child:
+            LayoutBuilder(
+              builder: (_, constraints){ 
+                return Container(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  child: Column(
+                    children: <Widget>[
+                      cabecalho(constraints.maxWidth,constraints.maxHeight),
+                    ]
+                  ),
+                );
+              }
+            ),
+          ),
+          pesquisaTexto(),
+          pesquisaBarra(),
+          Expanded(
+            child: LayoutBuilder(
+            builder: (_, constraints){
+              return 
+                Container(
+                  width: constraints.maxWidth * .9,
+                  height: constraints.maxHeight,
+                  child: SingleChildScrollView(
+                    child: Column(
+                    children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            children: <Widget>[
+                              gerandoListagem(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  gradienteFundo(){
+    return BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
@@ -249,19 +294,20 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
             Colors.pinkAccent,
           ],
         ),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Stack(
+      );
+  }
+
+  cabecalho(width,height){
+    return Stack(
               children: <Widget>[
                 Image.asset(
                   "images/flor.png",
                   fit: BoxFit.cover,
-                  width: 900,
+                  height: height,
+                  width: width,
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(100, 90, 100, 0),
+                  margin: EdgeInsets.fromLTRB(width * .25, height * .25, width * .25, 0),
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -274,72 +320,40 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
                     ),
                   ),
                   alignment: Alignment.center,
-                  child: RichText(
-                    text: TextSpan(
-                      text: "",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        decorationStyle: TextDecorationStyle.wavy,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'MEGA',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange),
-                        ),
-                        TextSpan(
-                          text: ' QUIZ',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple[400]),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: GText.ProjetoTitulo(),
                 ),
               ],
-            ),
-            SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: Text(
-                        "Escolha Um Quiz",
-                        style: TextStyle(
-                            decoration: TextDecoration.none,
-                            color: Colors.white),
-                      ),
-                    ),
-                    Material(
-                      child: TextField(
-                        controller: _search_controller,
-                        onChanged: (text) {
-                          _streamController.add('search');
-                          textFillter = text;
-                        },
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(2))),
-                          fillColor: Colors.transparent,
-                          prefixIcon: Icon(Icons.search),
-                          hintText: "Pesquise pelo assunto de seu Interesse",
-                        ),
-                      ),
-                    ),
-                    gerandoListagem(),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+            );
   }
+
+  pesquisaTexto(){
+    return 
+       Center(
+         child: GText.DText(
+           "Escolha Um Quiz",
+         ),
+       );
+  }
+
+  pesquisaBarra(){
+    return Material(
+        child: TextField(
+         controller: _search_controller,
+         onChanged: (text) {
+           _streamController.add('search');
+           textFillter = text;
+         },
+         decoration: InputDecoration(
+           enabledBorder: OutlineInputBorder(
+               borderSide: BorderSide(color: Colors.red),
+               borderRadius: BorderRadius.all(Radius.circular(2)),
+           ),
+           fillColor: Colors.transparent,
+           prefixIcon: Icon(Icons.search),
+           hintText: "Pesquise pelo assunto de seu Interesse",
+         ),
+       ),
+      );
+  }
+
 }

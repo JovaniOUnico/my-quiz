@@ -7,21 +7,25 @@ import 'package:my_quiz/ui/questoes.dart';
 void main() async {
   runApp(MyApp());
 
-/*   DocumentSnapshot snapshot = await Firestore.instance
-      .collection('lista')
-      .document('zN2RcJCj9mZoZl1AIyha')
-      .get();
-  print(snapshot.data);
+  /*   
 
-  QuerySnapshot questoesSnap =
-      await Firestore.instance.collection('questoes').getDocuments();
-  questoesSnap.documents.forEach((element) {
-    if (element.data['lista_id'] == 'zN2RcJCj9mZoZl1AIyha') {
-      print(element.data);
-    } else {
-      print("oque?");
-    }
-  }); */
+    DocumentSnapshot snapshot = await Firestore.instance
+        .collection('lista')
+        .document('zN2RcJCj9mZoZl1AIyha')
+        .get();
+    print(snapshot.data);
+
+    QuerySnapshot questoesSnap =
+        await Firestore.instance.collection('questoes').getDocuments();
+    questoesSnap.documents.forEach((element) {
+      if (element.data['lista_id'] == 'zN2RcJCj9mZoZl1AIyha') {
+        print(element.data);
+      } else {
+        print("oque?");
+      }
+    }); 
+
+  */
 
 /*   QuerySnapshot snapshot =
       await Firestore.instance.collection('areas_lista').getDocuments();

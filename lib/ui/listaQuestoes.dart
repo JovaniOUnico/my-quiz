@@ -5,7 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_quiz/controllers/questao_lista.dart';
 import 'package:my_quiz/ui/questoes.dart';
 
+/** Configurações Globais */
+import 'package:my_quiz/ui/globalText.dart';
+
 class ListQuestions extends StatefulWidget {
+  
+  /* Atributos Classe */
   String id_lista;
   String img_local;
 
@@ -16,6 +21,8 @@ class ListQuestions extends StatefulWidget {
 }
 
 class _ListQuestionsState extends State<ListQuestions> {
+
+  /* Atributos Classe */
   List<QuestaoLista> ofc_lista_questionario;
   int ofc_lista_questionario_qtd;
   dynamic fbr_lista_questionario;
@@ -63,10 +70,10 @@ class _ListQuestionsState extends State<ListQuestions> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    Questions(ofc_lista_questionario[index].id),
+                    Questions(ofc_lista_questionario[index].id,ofc_lista_questionario[index].dificuldade, ofc_lista_questionario[index].qtd_questoes),
               ),
             );
-            print(ofc_lista_questionario[index].id);
+            print(ofc_lista_questionario[index].qtd_questoes);
           },
           child: Column(
             children: <Widget>[
@@ -95,14 +102,9 @@ class _ListQuestionsState extends State<ListQuestions> {
                           ofc_lista_questionario[index].corDificuldade(),
                     ),
                   ),
-                  //TODO colocar um quadrado aqui
-                  Text(
+                  GText.DMText(
                     ofc_lista_questionario[index]
                         .nivelDificuldade(), //TODO Dificuldade
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        decoration: TextDecoration.none),
                   ),
                 ],
               ),
@@ -121,7 +123,7 @@ class _ListQuestionsState extends State<ListQuestions> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
-            child: Text("Erro Ao Acessar"),
+            child: GText.DMText("Erro Ao Acessar"),
           );
         }
 
@@ -155,15 +157,55 @@ class _ListQuestionsState extends State<ListQuestions> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Stack(
+            Container(
+            width:  MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height *.18,
+            child:
+              LayoutBuilder(
+                builder: (_, constraints){
+                  return Container(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: Column(
+                      children: <Widget>[
+                        cabecalho(constraints.maxWidth,constraints.maxHeight),
+                      ]
+                    ),
+                  );
+                }
+              ),
+            ),
+            Container(
+              width:  MediaQuery.of(context).size.width * .9,
+              height: MediaQuery.of(context).size.height * .80,
+              child: SingleChildScrollView(
+                child: Padding(
+                padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: <Widget>[
+                      gerandoListagem(),
+                    ],
+                  ),
+                ),
+              ),
+            ),    
+          ],
+        ),
+      ),
+    );
+  }
+
+  cabecalho(width,height){
+    return Stack(
               children: <Widget>[
                 Image.asset(
                   "images/flor.png",
                   fit: BoxFit.cover,
-                  width: 900,
+                  height: height,
+                  width: width,
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(100, 90, 100, 0),
+                  margin: EdgeInsets.fromLTRB(width * .25, height * .25, width * .25, 0),
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -176,46 +218,10 @@ class _ListQuestionsState extends State<ListQuestions> {
                     ),
                   ),
                   alignment: Alignment.center,
-                  child: RichText(
-                    text: TextSpan(
-                      text: "",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        decorationStyle: TextDecorationStyle.wavy,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'MEGA',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange),
-                        ),
-                        TextSpan(
-                          text: ' QUIZ',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple[400]),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: GText.ProjetoTitulo(),
                 ),
               ],
-            ),
-            SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    gerandoListagem(),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+            );
   }
+
 }

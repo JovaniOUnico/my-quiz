@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:my_quiz/ui/questoes.dart';
 import 'package:my_quiz/ui/conjuntoLista.dart';
 
+/** Configurações Globais */
+import 'package:my_quiz/ui/globalText.dart';
+
 class Results extends StatefulWidget {
+
+  /* Atributos Classe */
   int ofc_acertos;
   int ofc_erros;
   int ofc_qtd;
+  int dificuldade;
   String ofc_id_questoes;
 
-  Results(this.ofc_acertos, this.ofc_erros, this.ofc_qtd, this.ofc_id_questoes);
+  Results(this.ofc_acertos, this.ofc_erros, this.ofc_qtd, this.ofc_id_questoes, this.dificuldade);
 
   @override
   _ResultsState createState() => _ResultsState();
@@ -18,15 +24,10 @@ class _ResultsState extends State<Results> {
   @override
   Widget build(BuildContext context) {
     return Container(
+
+      /* Gradiente do Fundo das Questões */
       decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                Colors.blue,
-                Colors.red,
-              ],
-            ),
+            gradient: gradienteFundo(),
           ),
       child: SingleChildScrollView(
         child: Column(
@@ -38,45 +39,7 @@ class _ResultsState extends State<Results> {
                   fit: BoxFit.cover,
                   width: 900,
                 ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(100, 90, 100, 0),
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                        color: Colors.white10,
-                        width: 4.0,
-                        style: BorderStyle.solid),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                  ),
-                  alignment: Alignment.center,
-                  child: RichText(
-                    text: TextSpan(
-                      text: "",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        decorationStyle: TextDecorationStyle.wavy,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'MEGA',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange),
-                        ),
-                        TextSpan(
-                          text: ' QUIZ',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple[400]),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                tituloContainer(),
               ],
             ),
             Column(
@@ -84,36 +47,7 @@ class _ResultsState extends State<Results> {
                 Container(
                   margin: EdgeInsets.fromLTRB(30, 90, 30, 0),
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 60),
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                          color: Colors.white10,
-                          width: 4.0,
-                          style: BorderStyle.solid),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(30),
-                      ),
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        text: "",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 43,
-                          decorationStyle: TextDecorationStyle.wavy,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: acertosTexto(),
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: acertosContainer(),
                 ),
                 Container(
                   margin: EdgeInsets.fromLTRB(30, 90, 30, 30),
@@ -131,28 +65,32 @@ class _ResultsState extends State<Results> {
                           Radius.circular(30),
                         ),
                       ),
+                      child: Center(
                       child:RichText(
+                      textAlign: TextAlign.center,
                       text: TextSpan(
                         text: "",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 40,
                           decorationStyle: TextDecorationStyle.wavy,
+                          fontFamily: 'Mont'
                         ),
                         children: <TextSpan>[
                           TextSpan(
                             text: widget.ofc_acertos.toString() + ' ACERTOS DE ',
-                            style: TextStyle(color: Colors.green),
+                            style: TextStyle(color: Colors.green, fontFamily: 'Mont'),
                           ),
                           TextSpan(
                             text: ' ' + widget.ofc_qtd.toString(),
-                            style: TextStyle(color: Colors.purple),
+                            style: TextStyle(color: Colors.purple, fontFamily: 'Mont'),
                           ),
                           TextSpan(
                             text: ' PERGUNTAS ',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white,fontFamily: 'Mont',),
                           ),
                         ],
+                      ),
                       ),
                     ),
                   ),
@@ -184,7 +122,8 @@ class _ResultsState extends State<Results> {
                               textColor: Colors.orange,
                               child: Text(
                                 "Voltar ao Inicio",
-                                style: TextStyle(fontSize: 38.0),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 38.0, fontFamily: 'Mont'),
                               ),
                             ),
                           ),
@@ -197,7 +136,7 @@ class _ResultsState extends State<Results> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      Questions(widget.ofc_id_questoes),
+                                      Questions(widget.ofc_id_questoes,widget.dificuldade,widget.ofc_qtd),
                                 ),
                               );
                             },
@@ -207,7 +146,8 @@ class _ResultsState extends State<Results> {
                             textColor: Colors.orange,
                             child: Text(
                               "Tentar Novamente",
-                              style: TextStyle(fontSize: 38.0),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 38.0,fontFamily: 'Mont'),
                             ),
                           ),
                         ),
@@ -236,4 +176,68 @@ class _ResultsState extends State<Results> {
       return "Que pena vocÊ errou todas as questões";
     }
   }
+
+  acertosContainer(){
+    return Container(
+      margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+            color: Colors.white10,
+            width: 4.0,
+            style: BorderStyle.solid),
+        borderRadius: BorderRadius.all(
+          Radius.circular(30),
+        ),
+      ),
+      child: RichText(
+        text: TextSpan(
+          text: "",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 43,
+            decorationStyle: TextDecorationStyle.wavy,
+          ),
+          children: <TextSpan>[
+            TextSpan(
+              text: acertosTexto(),
+              style: TextStyle(color: Colors.green, fontFamily: 'Mont'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  tituloContainer() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(100, 90, 100, 0),
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+            color: Colors.white10,
+            width: 4.0,
+            style: BorderStyle.solid),
+        borderRadius: BorderRadius.all(
+          Radius.circular(30),
+        ),
+      ),
+      alignment: Alignment.center,
+      child: GText.ProjetoTitulo(),
+    );
+  }
+
+  gradienteFundo() {
+    return LinearGradient(
+      begin: Alignment.topRight,
+      end: Alignment.bottomLeft,
+      colors: [
+        Colors.blue,
+        Colors.red,
+      ],
+    );
+  }
+
 }

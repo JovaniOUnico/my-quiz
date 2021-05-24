@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,7 @@ class QuestaoLista {
   String nome_lista;
   String tema;
   String id;
+  int qtd_questoes;
 
   void setDificuldade(int value) {
     dificuldade = value;
@@ -19,8 +21,21 @@ class QuestaoLista {
     tema = value;
   }
 
-  void setDocumentoId(String value) {
+  void setDocumentoId(String value) async{
     id = value;
+    qtd_questoes = 0;
+    
+    //Pega todas as questoes da lista
+    QuerySnapshot questoesSnap =
+        await Firestore.instance.collection('questoes').getDocuments();
+
+    questoesSnap.documents.forEach((element) {
+      if (element.data['lista_id'] == id) {
+        qtd_questoes++;
+      } else {
+        //questão não tem o id certo
+      }
+    });
   }
 
   String nivelDificuldade() {
@@ -69,4 +84,5 @@ class QuestaoLista {
       );
     }
   }
+
 }
