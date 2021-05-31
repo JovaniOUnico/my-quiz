@@ -204,7 +204,7 @@ class _ConjuntoListaState extends State<ConjuntoLista> {
               Row(
                 children: <Widget>[
                   //TODO colocar um quadrado aqui
-                  GText.DMText(ofc_lista_conjunto[index].nome),//TODO Dificuldade
+                  GText.DXLText(ofc_lista_conjunto[index].nome),//TODO Dificuldade
                 ],
               ),
               Container(

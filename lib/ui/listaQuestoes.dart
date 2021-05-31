@@ -77,6 +77,14 @@ class _ListQuestionsState extends State<ListQuestions> {
           },
           child: Column(
             children: <Widget>[
+              Row(
+                children: <Widget>[
+                  GText.DLText(
+                    ofc_lista_questionario[index]
+                        .nome_lista, //TODO Dificuldade
+                  ),
+                ],
+              ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -137,7 +145,6 @@ class _ListQuestionsState extends State<ListQuestions> {
   }
 
   getLista() async {
-    print("ass");
     //Pega todas as questoes da lista
     QuerySnapshot questoesSnap =
         await Firestore.instance.collection('lista').getDocuments();
