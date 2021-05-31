@@ -43,7 +43,7 @@ class _QuestionsState extends State<Questions> {
     //Atualiza barra de Progresso
     setState(() {
       //Altera Barra de Progresso
-      progress = ofc_questao_atual+1/ofc_qtd_questoes;
+      progress = (ofc_questao_atual+1)/ofc_qtd_questoes;
     });
 
     if (ofc_qtd_questoes - 1 == ofc_questao_atual) {
